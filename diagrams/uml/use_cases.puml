@@ -1,0 +1,55 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+
+skinparam actorStyle awesome
+
+package UserAccess {
+    actor User
+
+    User --> (Sign in)
+    User ---> (Sign up)
+    User ----> (Reset own password)
+    User ----> (Delete account) #line.dashed;
+}
+
+package Profile {
+    actor "User" as Profile.User
+
+    Profile.User ---|> User : is a
+    Profile.User --> (Change profile data)
+    Profile.User --> (Invite friends)
+    Profile.User --> (Create teams)
+}
+
+package Administration {
+    actor Administrator
+
+    usecase ManageAdministrators as "Manage a list of administrators, editors"
+
+    Administrator ---|> User : is a
+    Administrator --> ManageAdministrators
+}
+
+package Tournaments {
+    actor Player
+    actor Organizer
+
+    Player --> (Join a tournament)
+
+    Organizer --> (Organize tournament)
+    Organizer ---> (Invite a Sponsor)
+    Organizer ----> (Invite a Player)
+
+    User <|--- Player : is a
+    User <|--- Organizer : is a
+}
+
+package Games {
+    actor Editor
+
+    Editor --> (Manage the games list)
+
+    User <|--- Editor : is a
+}
+
+@enduml

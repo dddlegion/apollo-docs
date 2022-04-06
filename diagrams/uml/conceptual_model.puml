@@ -1,0 +1,141 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+package "User Access" #FFDDDD {
+    scale max 2000 width
+
+    object User
+    object "User Role" as UserRole
+    object Permission
+    object "User Registration" as UserRegistration
+
+    enum "User Registration Status" as UserRegistrationStatus {
+        WaitingForConfirmation
+        Confirmed
+        Expired
+    }
+
+    User "0..*" --> "1..*" UserRole : has
+    UserRole "1..*" --> "1..*" Permission : has
+    User --> UserRegistration : created for
+    UserRegistration --> UserRegistrationStatus : is in
+}
+
+package Administration #E4F7E4 {
+    object Administrator
+
+    Administrator ---> User : is a
+}
+
+package Profile #FFEDDB {
+    object "User" as Profile.User
+    object Profile
+    object "Profile Picture" as ProfilePicture
+    object Friend
+    object "Team" as ProfileTeam
+    object "Team Member" as TeamMember
+    object "Team Administrator" as TeamAdministrator
+
+    Profile.User --> Profile : has
+    Profile.User "1" --> "0..*" ProfileTeam : has
+    Profile --> ProfilePicture : contains
+    Friend --> User : is a
+    Profile.User ---> User : is a
+    Profile.User "1" --> "0..*" Friend : has
+    ProfileTeam "1" --> "1..*" TeamMember : has
+    ProfileTeam --> TeamAdministrator : has
+    TeamAdministrator --> TeamMember : is a
+}
+
+package Tournaments #F3E8F8 {
+    object Organizer
+    object Tournament
+    object TournamentLimits
+    object TournamentTimeframe
+    object Discipline
+    object "Platform" as TournamentPlatform
+    object Participant
+    object ParticipantRegistration
+    object ParticipantInvitation
+    object Player
+    object Team
+    object TeamLimits
+    object TournamentStructure
+    object Stage
+    object Group
+    object Round
+    object Match
+
+    enum TournamentStatus {
+        Setup
+        Pending
+        InProgress
+        Finished
+    }
+
+    enum ParticipantRegistrationDecision {
+        Accept
+        Reject
+    }
+
+    enum ParticipantRegistrationStatus {
+        Pending
+        Accepted
+        Rejected
+    }
+
+    enum ParticipantInvitationDecision {
+        Accept
+        Reject
+    }
+
+    enum ParticipantInvitationStatus {
+        Pending
+        Accepted
+        Rejected
+    }
+
+    enum StageStatus {
+        Pending
+        InProgress
+        Finished
+    }
+
+    Organizer --> Tournament : organize
+    Tournament --> Discipline : has
+    Tournament --> TournamentLimits : has
+    Tournament --> "1..*" TournamentPlatform : has
+    Tournament --> TournamentStatus : is in
+    Tournament --> TournamentTimeframe : has
+    Player --> Participant : is a
+    Team --> Participant : is a
+    Team --> TeamLimits : has
+    Participant --> ParticipantRegistration : created for
+    Organizer --> ParticipantInvitation : makes
+    ParticipantInvitation --> ParticipantInvitationStatus : is in
+    Participant --> ParticipantInvitationDecision : makes
+    ParticipantInvitationDecision --> ParticipantInvitation : about
+'    ParticipantRegistration --> Tournament : for
+    ParticipantRegistration --> ParticipantRegistrationStatus : is in
+    Organizer --> ParticipantRegistrationDecision : makes
+    ParticipantRegistrationDecision --> ParticipantRegistration : about
+    Player ..> Team : ? (how to relate a player as a part of a team)
+    Tournament --> TournamentStructure : has
+    TournamentStructure "1" --> "0..*" Stage : has
+    Stage --> StageStatus : is in
+    Stage "1" --> "1..*" Group : has
+    Group "1" --> "1..*" Round : has
+    Round "1" --> "1..*" Match : has
+
+
+'    Player ---> User : is a
+'    Organizer ---> User : is a
+}
+
+package Games {
+    object Game
+    object AvailablePlatform
+
+    Game "1" --> "1..*" AvailablePlatform : has
+}
+@enduml

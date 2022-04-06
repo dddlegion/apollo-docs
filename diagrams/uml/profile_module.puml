@@ -1,0 +1,27 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+scale max 2000 width
+
+package Team {
+    class Team << (R,#ffbbbb) Aggregate Root >>
+    object "Team Member" as TeamMember
+    object "Team Administrator" as TeamAdministrator
+}
+
+object "User" as Profile.User
+object Profile
+object "Profile Picture" as ProfilePicture
+object Friend
+
+Profile.User --> Profile : has
+Profile.User "1" --> "0..*" Team : has
+Profile --> ProfilePicture : contains
+Friend --> User : is a
+Profile.User ---> User : is a
+Profile.User "1" --> "0..*" Friend : has
+Team "1" --> "1..*" TeamMember : has
+Team --> TeamAdministrator : has
+TeamAdministrator --> TeamMember : is a
+
+@enduml
